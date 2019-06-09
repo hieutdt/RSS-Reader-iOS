@@ -15,6 +15,9 @@
 		041D6DD222AA148A00E47806 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 041D6DD122AA148A00E47806 /* main.m */; };
 		041D6DDC22AA148A00E47806 /* TH_ReaderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 041D6DDB22AA148A00E47806 /* TH_ReaderTests.m */; };
 		041D6DE922AA1A9900E47806 /* NewsReaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 041D6DE822AA1A9900E47806 /* NewsReaderView.m */; };
+		04569F6922AD56FF0066D794 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 04569F6722AD56FE0066D794 /* Reachability.m */; };
+		0495C92C22AC1300002B300A /* DBManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0495C92B22AC1300002B300A /* DBManager.m */; };
+		0495C92E22AC131F002B300A /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0495C92D22AC131F002B300A /* libsqlite3.tbd */; };
 		04B9F10122AAAF7400BE3701 /* Feed.m in Sources */ = {isa = PBXBuildFile; fileRef = 04B9F10022AAAF7400BE3701 /* Feed.m */; };
 /* End PBXBuildFile section */
 
@@ -44,6 +47,11 @@
 		041D6DDD22AA148A00E47806 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		041D6DE822AA1A9900E47806 /* NewsReaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NewsReaderView.m; sourceTree = "<group>"; };
 		041D6DEA22AA1AA300E47806 /* NewsReaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsReaderView.h; sourceTree = "<group>"; };
+		04569F6722AD56FE0066D794 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		04569F6822AD56FE0066D794 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		0495C92A22AC1300002B300A /* DBManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DBManager.h; sourceTree = "<group>"; };
+		0495C92B22AC1300002B300A /* DBManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DBManager.m; sourceTree = "<group>"; };
+		0495C92D22AC131F002B300A /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		04B9F0FF22AAAF7400BE3701 /* Feed.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Feed.h; sourceTree = "<group>"; };
 		04B9F10022AAAF7400BE3701 /* Feed.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Feed.m; sourceTree = "<group>"; };
 		04B9F10E22AB848C00BE3701 /* libxml2.2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.2.tbd; path = usr/lib/libxml2.2.tbd; sourceTree = SDKROOT; };
@@ -55,6 +63,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0495C92E22AC131F002B300A /* libsqlite3.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,6 +99,8 @@
 		041D6DC122AA148900E47806 /* TH Reader */ = {
 			isa = PBXGroup;
 			children = (
+				04569F6822AD56FE0066D794 /* Reachability.h */,
+				04569F6722AD56FE0066D794 /* Reachability.m */,
 				041D6DEA22AA1AA300E47806 /* NewsReaderView.h */,
 				041D6DE822AA1A9900E47806 /* NewsReaderView.m */,
 				041D6DC222AA148900E47806 /* AppDelegate.h */,
@@ -103,6 +114,8 @@
 				041D6DD122AA148A00E47806 /* main.m */,
 				04B9F0FF22AAAF7400BE3701 /* Feed.h */,
 				04B9F10022AAAF7400BE3701 /* Feed.m */,
+				0495C92A22AC1300002B300A /* DBManager.h */,
+				0495C92B22AC1300002B300A /* DBManager.m */,
 			);
 			path = "TH Reader";
 			sourceTree = "<group>";
@@ -119,6 +132,7 @@
 		04B9F10D22AB848B00BE3701 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0495C92D22AC131F002B300A /* libsqlite3.tbd */,
 				04B9F11022AB84A900BE3701 /* libxml2.tbd */,
 				04B9F10E22AB848C00BE3701 /* libxml2.2.tbd */,
 			);
@@ -228,6 +242,8 @@
 				04B9F10122AAAF7400BE3701 /* Feed.m in Sources */,
 				041D6DC722AA148900E47806 /* ViewController.m in Sources */,
 				041D6DD222AA148A00E47806 /* main.m in Sources */,
+				04569F6922AD56FF0066D794 /* Reachability.m in Sources */,
+				0495C92C22AC1300002B300A /* DBManager.m in Sources */,
 				041D6DE922AA1A9900E47806 /* NewsReaderView.m in Sources */,
 				041D6DC422AA148900E47806 /* AppDelegate.m in Sources */,
 			);
