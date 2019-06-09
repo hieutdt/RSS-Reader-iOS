@@ -103,8 +103,7 @@
                     }
                 }
             } else {
-                BOOL executeQueryResults = sqlite3_step(compiledStatement);
-                if (executeQueryResults == SQLITE_DONE) {
+                if (sqlite3_step(compiledStatement)) {
                     // Keep the affected rows.
                     self.affectedRows = sqlite3_changes(sqlite3Database);
                     

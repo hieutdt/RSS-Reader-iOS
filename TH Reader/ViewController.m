@@ -83,16 +83,16 @@
     }
     else {
         //drop old table
-        NSString *query = @"DROP TABLE news";
+        NSString *query = @"DROP TABLE news;";
         [db executeQuery:query];
         
         //create new table
-        query = @"CREATE TABLE IF NOT EXISTS news ( link text PRIMARY key, title text, description text) WITHOUT ROWID;";
+        query = @"CREATE TABLE IF NOT EXISTS news (id int PRIMARY KEY, link text, title text, description text) WITHOUT ROWID;";
         [db executeQuery:query];
         
         //write data from feeds to database
         for (int i = 0; i < feeds.count; i++) {
-            NSString *insertQuery = [NSString stringWithFormat:@"INSERT INTO news VALUES('%@', '%@', '%@')", [[feeds objectAtIndex:i] getLink], [[feeds objectAtIndex:i] getTitle], [[feeds objectAtIndex:i] getDescription]];
+            NSString *insertQuery = [NSString stringWithFormat:@"INSERT INTO news VALUES(%d, '%@', '%@', '%@');", i, [[feeds objectAtIndex:i] getLink], [[feeds objectAtIndex:i] getTitle], [[feeds objectAtIndex:i] getDescription]];
             [db executeQuery:insertQuery];
             NSLog(@"Insert affected rows: %d\n", [db affectedRows]);
         }
