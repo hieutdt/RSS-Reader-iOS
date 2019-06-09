@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "Feed.h"
 #import "NewsReaderView.h"
+#import "DBManager.h"
 
 @interface ViewController () {
     NSXMLParser *parser;
@@ -21,6 +22,9 @@
     NSString *element;
     
     NSMutableString *passURL;
+    
+    DBManager *db;
+    NSArray *newsInfoArray;
 }
 
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
@@ -33,6 +37,8 @@
 
 - (void) splitDescription;
 
+- (void)loadData;
+
 @end
 
 @implementation ViewController
@@ -44,21 +50,54 @@
     [bar setTintColor:[UIColor blackColor]];
     [bar setBackgroundColor:[UIColor colorWithRed:0 green:184 blue:0 alpha:10]];
     
+    //init database connection
+    db = [[DBManager alloc] initWithDatabaseFileName:@"news.sql"];
+    
     [_feedsButton setTintColor:[UIColor blueColor]];
     
+    //init feeds array
     feeds = [[NSMutableArray alloc] init];
+    
+    //connect to RSS Url and Parse RSS
     NSURL *url = [NSURL URLWithString:@"https://www.cnet.com/rss/news/"];
     //NSURL *url = [NSURL URLWithString:@"https://vnexpress.net/rss/the-thao.rss"];
     parser = [[NSXMLParser alloc] initWithContentsOfURL:url];
     [parser setDelegate:(id)self];
     [parser setShouldResolveExternalEntities:NO];
     [parser parse];
+    
+    //if cant get any feeds by dont have Internet connection
+    if (feeds.count == 0) {
+        //read data from db
+        [self loadData];
+        
+        NSInteger indexOfLink = [db.columnNamesArray indexOfObject:@"link"];
+        NSInteger indexOfTitle = [db.columnNamesArray indexOfObject:@"title"];
+        NSInteger indexOfDescription = [db.columnNamesArray indexOfObject:@"description"];
+        
+        //get data from database --> feeds (tableView show data from feeds)
+        for (int i = 0; i < newsInfoArray.count; i++) {
+            Feed *obj = [[Feed alloc] initWithTitle:[[newsInfoArray objectAtIndex:i] objectAtIndex:indexOfTitle] Link:[[newsInfoArray objectAtIndex:i] objectAtIndex:indexOfLink] Description:[[newsInfoArray objectAtIndex:i] objectAtIndex:indexOfDescription] Image:nil];
+            [feeds addObject:obj];
+        }
+    }
+    else {
+        //drop old table
+        NSString *query = @"DROP TABLE news";
+        [db executeQuery:query];
+        
+        //create new table
+        query = @"CREATE TABLE IF NOT EXISTS news ( link text PRIMARY key, title text, description text) WITHOUT ROWID;";
+        [db executeQuery:query];
+        
+        //write data from feeds to database
+        for (int i = 0; i < feeds.count; i++) {
+            NSString *insertQuery = [NSString stringWithFormat:@"INSERT INTO news VALUES('%@', '%@', '%@')", [[feeds objectAtIndex:i] getLink], [[feeds objectAtIndex:i] getTitle], [[feeds objectAtIndex:i] getDescription]];
+            [db executeQuery:insertQuery];
+            NSLog(@"Insert affected rows: %d\n", [db affectedRows]);
+        }
+    }
 }
-
-/*
-- (IBAction)buttonOnClick:(id)sender {
- 
-}*/
 
 - (NSInteger)numberOfSelectionsInTableView: (UITableView *)tableView {
     return 1;
@@ -176,6 +215,16 @@
     else {
         [_tableView reloadData];
     }
+}
+
+- (void)loadData {
+    NSString *query = @"select * from news";
+    
+    if (newsInfoArray != nil) {
+        newsInfoArray = nil;
+    }
+    
+    newsInfoArray = [[NSArray alloc] initWithArray:[db loadDataFromDB:query]];
 }
 
 @end
