@@ -44,6 +44,8 @@
 
 - (BOOL)connectedToInternet;
 
+- (void)saveDataToDatabase;
+
 @end
 
 
@@ -96,22 +98,7 @@
     }
     //Online
     else {
-        //drop old table
-        NSString *query = @"DROP TABLE news;";
-        [db executeQuery:query];
-        
-        //create new table
-        query = @"CREATE TABLE IF NOT EXISTS news (id int PRIMARY KEY, link text, title text, description text) WITHOUT ROWID;";
-        [db executeQuery:query];
-        
-        //write data from feeds to database
-        for (int i = 0; i < feeds.count; i++) {
-            NSString *insertQuery = [NSString stringWithFormat:@"INSERT INTO news VALUES(%d, '%@', '%@', '%@');", i, [[feeds objectAtIndex:i] getLink], [[feeds objectAtIndex:i] getTitle], [[feeds objectAtIndex:i] getDescription]];
-            [db executeQuery:insertQuery];
-            
-            //log
-            NSLog(@"Insert affected rows: %d\n", [db affectedRows]);
-        }
+        [self saveDataToDatabase];
     }
 }
 
@@ -184,8 +171,7 @@
     }
 }
 
-//Nếu đến thẻ kết thúc của 1 phần tử, kiểm tra xem phần tử đó có phải thẻ <item> không, nếu là
-//thẻ item thì gọi hàm didEndElement và thêm vào feeds
+//if the end element is <item> --> add to feeds array
 - (void)parser:(NSXMLParser *)parser didEndElement:(nonnull NSString *)elementName namespaceURI:(nullable NSString *)namespaceURI qualifiedName:(nullable NSString *)qName {
     if ([elementName isEqualToString:@"item"]) {
         [self splitDescription];
@@ -235,6 +221,8 @@
     }
     else {
         [_tableView reloadData];
+        //in this time, feeds is the new feeds --> save data to database
+        [self saveDataToDatabase];
     }
 }
 
@@ -271,6 +259,25 @@
     }
     else {
         return TRUE;
+    }
+}
+
+- (void)saveDataToDatabase {
+    //drop old table
+    NSString *query = @"DROP TABLE news;";
+    [db executeQuery:query];
+    
+    //create new table
+    query = @"CREATE TABLE IF NOT EXISTS news (id int PRIMARY KEY, link text, title text, description text) WITHOUT ROWID;";
+    [db executeQuery:query];
+    
+    //write data from feeds to database
+    for (int i = 0; i < feeds.count; i++) {
+        NSString *insertQuery = [NSString stringWithFormat:@"INSERT INTO news VALUES(%d, '%@', '%@', '%@');", i, [[feeds objectAtIndex:i] getLink], [[feeds objectAtIndex:i] getTitle], [[feeds objectAtIndex:i] getDescription]];
+        [db executeQuery:insertQuery];
+        
+        //log
+        NSLog(@"Insert affected rows: %d\n", [db affectedRows]);
     }
 }
 

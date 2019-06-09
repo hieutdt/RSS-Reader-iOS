@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TH Reader/ViewController.m"
-            timestampString = "581785612.793098"
+            timestampString = "581788830.581971"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "265"
-            endingLineNumber = "265"
+            startingLineNumber = "253"
+            endingLineNumber = "253"
             landmarkName = "-connectedToInternet"
             landmarkType = "7">
          </BreakpointContent>
