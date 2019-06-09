@@ -79,10 +79,6 @@
                                             <action selector="sideBarButton:" destination="MuF-wL-p6D" id="X8E-Sq-ovw"/>
                                         </connections>
                                     </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="ZWV-X6-mr2"/>
-                                    <barButtonItem title="Item" image="icons8-news-50" id="ga4-Qj-4iV">
-                                        <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    </barButtonItem>
                                 </items>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </toolbar>
@@ -123,7 +119,6 @@
                     </view>
                     <navigationItem key="navigationItem" title="TH Reader" id="MUF-XV-Pw9"/>
                     <connections>
-                        <outlet property="feedsButton" destination="ga4-Qj-4iV" id="Yvk-iD-U5E"/>
                         <outlet property="searchBar" destination="ni2-NJ-uul" id="uDh-K3-8w8"/>
                         <outlet property="sideBarButton" destination="MYA-6y-FCt" id="yrT-Z6-exI"/>
                         <outlet property="tableView" destination="caa-mO-riV" id="n3O-MY-s1N"/>
@@ -189,6 +184,5 @@
     <resources>
         <image name="icons8-checkmark-filled-50" width="25" height="25"/>
         <image name="icons8-menu-50" width="25" height="25"/>
-        <image name="icons8-news-50" width="25" height="25"/>
     </resources>
 </document>

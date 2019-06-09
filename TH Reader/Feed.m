@@ -23,7 +23,7 @@
 }
 
 //init with all properties
-- (id)initWithTitle:(NSMutableString*)feedTitle Link:(NSMutableString*)feedLink Description:(NSMutableString*)feedDescription Image:(NSMutableString*)feedImageLink {
+- (id)initWithTitle:(NSMutableString*)feedTitle Link:(NSMutableString*)feedLink Description:(NSMutableString*)feedDescription {
     if (self = [super init]) {
         title = [feedTitle copy];
         link = [feedLink copy];

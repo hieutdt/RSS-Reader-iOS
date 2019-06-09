@@ -10,6 +10,7 @@
 #import "Feed.h"
 #import "NewsReaderView.h"
 #import "DBManager.h"
+#import "Reachability.h"
 
 @interface ViewController () {
     NSXMLParser *parser;
@@ -25,6 +26,8 @@
     
     DBManager *db;
     NSArray *newsInfoArray;
+    
+    NSString *tableDatabaseName;
 }
 
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
@@ -33,13 +36,20 @@
 
 @property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
 
-@property (strong, nonatomic) IBOutlet UIBarButtonItem *feedsButton;
+@property (nonatomic) BOOL isOffline;
 
 - (void) splitDescription;
 
 - (void)loadData;
 
+- (BOOL)connectedToInternet;
+
 @end
+
+
+
+
+//-------------- implementation -----------------------------------------------
 
 @implementation ViewController
 
@@ -50,10 +60,10 @@
     [bar setTintColor:[UIColor blackColor]];
     [bar setBackgroundColor:[UIColor colorWithRed:0 green:184 blue:0 alpha:10]];
     
+    _isOffline = FALSE;
+    
     //init database connection
     db = [[DBManager alloc] initWithDatabaseFileName:@"news.sql"];
-    
-    [_feedsButton setTintColor:[UIColor blueColor]];
     
     //init feeds array
     feeds = [[NSMutableArray alloc] init];
@@ -69,18 +79,22 @@
     //if cant get any feeds by dont have Internet connection
     if (feeds.count == 0) {
         //read data from db
+        _isOffline = TRUE;
+        
         [self loadData];
         
+        //get index
         NSInteger indexOfLink = [db.columnNamesArray indexOfObject:@"link"];
         NSInteger indexOfTitle = [db.columnNamesArray indexOfObject:@"title"];
         NSInteger indexOfDescription = [db.columnNamesArray indexOfObject:@"description"];
         
         //get data from database --> feeds (tableView show data from feeds)
         for (int i = 0; i < newsInfoArray.count; i++) {
-            Feed *obj = [[Feed alloc] initWithTitle:[[newsInfoArray objectAtIndex:i] objectAtIndex:indexOfTitle] Link:[[newsInfoArray objectAtIndex:i] objectAtIndex:indexOfLink] Description:[[newsInfoArray objectAtIndex:i] objectAtIndex:indexOfDescription] Image:nil];
+            Feed *obj = [[Feed alloc] initWithTitle:[[newsInfoArray objectAtIndex:i] objectAtIndex:indexOfTitle] Link:[[newsInfoArray objectAtIndex:i] objectAtIndex:indexOfLink] Description:[[newsInfoArray objectAtIndex:i] objectAtIndex:indexOfDescription]];
             [feeds addObject:obj];
         }
     }
+    //Online
     else {
         //drop old table
         NSString *query = @"DROP TABLE news;";
@@ -94,6 +108,8 @@
         for (int i = 0; i < feeds.count; i++) {
             NSString *insertQuery = [NSString stringWithFormat:@"INSERT INTO news VALUES(%d, '%@', '%@', '%@');", i, [[feeds objectAtIndex:i] getLink], [[feeds objectAtIndex:i] getTitle], [[feeds objectAtIndex:i] getDescription]];
             [db executeQuery:insertQuery];
+            
+            //log
             NSLog(@"Insert affected rows: %d\n", [db affectedRows]);
         }
     }
@@ -133,8 +149,12 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"newsPushSegue"]) {
+        //check Internet connection first
+        self.isOffline = [self connectedToInternet];
+        
         NewsReaderView *vc = (NewsReaderView*)segue.destinationViewController;
         vc.url = passURL;
+        vc.isOffline = self.isOffline;
     }
 }
 
@@ -207,6 +227,7 @@
     [parser setShouldResolveExternalEntities:NO];
     [parser parse];
     
+    //if can't find any feeds from that RSS url
     if (feeds.count == 0) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"FAILED" message:@"Can't found this RSS link" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];
@@ -217,6 +238,7 @@
     }
 }
 
+//read data from database --> newsInfoArray
 - (void)loadData {
     NSString *query = @"select * from news";
     
@@ -225,6 +247,31 @@
     }
     
     newsInfoArray = [[NSArray alloc] initWithArray:[db loadDataFromDB:query]];
+}
+
+//get HTML text string from Url
+- (NSString*)getHTMLFromURL:(NSString*)url {
+    NSURL *targetURL = [NSURL URLWithString:url];
+    NSURLRequest *request = [NSURLRequest requestWithURL:targetURL];
+    NSURLResponse *response = nil;
+    NSError *error = nil;
+    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    
+    NSString *html = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    
+    return html;
+}
+
+- (BOOL)connectedToInternet {
+    Reachability *myNetwork = [Reachability reachabilityWithHostname:@"google.com"];
+    NetworkStatus myStatus = [myNetwork currentReachabilityStatus];
+    
+    if (myStatus == NotReachable) {
+        return FALSE;
+    }
+    else {
+        return TRUE;
+    }
 }
 
 @end

@@ -24,9 +24,17 @@
     
     targetURL = [NSURL URLWithString:url];
     request = [NSURLRequest requestWithURL:targetURL];
+    NSURLResponse *response = nil;
+    NSError *error = nil;
+    
+    data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
     
     [_webView loadRequest:request];
+    
+    if (!_isOffline) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"CONNECTION ERROR" message:@"Your device don't have Internet connection! Please check and try again!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+    }
 }
 
 @end
-
